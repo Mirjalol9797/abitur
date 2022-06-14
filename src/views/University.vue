@@ -1,133 +1,37 @@
 <template>
-  <div class="home-page">
-    <div class="site-wrapper">
-      <main class="main">
-        <div class="site-container">
-          <!-- университеты -->
-          <section class="main-universe home-wrap">
-            <div class="home-top">
-              <div class="home-title">Университеты</div>
-              <router-link :to="{ name: 'university' }">Все ВУЗы</router-link>
-            </div>
-            <carousel
-              class="site-slider"
-              :responsive="{
-                0: { items: 1 },
-                567: { items: 2 },
-                992: { items: 3 },
-              }"
-              :margin="20"
-              :nav="false"
-              :loop="true"
-              :autoplay="true"
-              :autoplaySpeed="300"
-              :autoplayTimeout="4000"
-            >
-              <router-link
-                class="site-slider__item"
-                v-for="(item, index) in univers"
-                :key="index"
-                :to="{ name: 'university-detail', params: { id: item.id } }"
-              >
-                <div class="site-slider__img">
-                  <img :src="`${item.image}`" />
-                </div>
-                <div class="site-slider__title">
-                  {{ item.name }}
-                </div>
-              </router-link>
-            </carousel>
-          </section>
-          <!-- тесты -->
-          <section class="main-tests home-wrap">
-            <div class="home-top">
-              <div class="home-title">Тесты по предметам</div>
-              <router-link :to="{ name: 'test' }">Все предметы</router-link>
-            </div>
-            <div class="tests-wrap">
-              <router-link to="/" class="tests-item">Математика</router-link>
-              <router-link to="/" class="tests-item">История</router-link>
-              <router-link to="/" class="tests-item"
-                >Английский язык</router-link
-              >
-              <router-link to="/" class="tests-item"
-                >Русский язык и литература</router-link
-              >
-              <router-link to="/" class="tests-item">Биология</router-link>
-              <router-link to="/" class="tests-item">География</router-link>
-            </div>
-          </section>
-          <!-- новости -->
-          <section class="main-news home-wrap">
-            <div class="home-top">
-              <div class="home-title">Hовости</div>
-              <router-link to="/">Смотреть все</router-link>
-            </div>
-            <carousel
-              class="site-slider"
-              :responsive="{
-                0: { items: 1 },
-                567: { items: 2 },
-                992: { items: 3 },
-              }"
-              :margin="20"
-              :nav="false"
-              :loop="true"
-              :autoplay="true"
-              :autoplaySpeed="300"
-              :autoplayTimeout="4000"
-            >
-              <div class="site-slider__item">
-                <div class="site-slider__img">
-                  <img src="@/assets/images/university/tatu.jpg" />
-                </div>
-                <div class="site-slider__title">
-                  Выпускники Президентских школ, обучающиеся в зарубежных вузах,
-                  получат субсидии
-                </div>
-              </div>
-              <div class="site-slider__item">
-                <div class="site-slider__img">
-                  <img src="@/assets/images/university/andu.jpg" />
-                </div>
-                <div class="site-slider__title">
-                  Стало известно, сколько молодых людей в этом году оканчивают
-                  школы
-                </div>
-              </div>
-              <div class="site-slider__item">
-                <div class="site-slider__img">
-                  <img src="@/assets/images/university/tatu.jpg" />
-                </div>
-                <div class="site-slider__title">
-                  Абитуриентам может быть предоставлена ​​возможность подавать
-                  документы на несколько форм обучения одновременно
-                </div>
-              </div>
-              <div class="site-slider__item">
-                <div class="site-slider__img">
-                  <img src="@/assets/images/university/anduagrar.jpg" />
-                </div>
-                <div class="site-slider__title">
-                  С 1 июня вырастут штрафы, налоги и госпошлина. А как насчет
-                  стипендий и контрактов?
-                </div>
-              </div>
-            </carousel>
-          </section>
-        </div>
-      </main>
+  <div class="university-page univer">
+    <div class="site-container">
+      <div class="univer-search">
+        <input
+          type="text"
+          placeholder="Введите название ВУЗа"
+          v-model="univer_search"
+        />
+      </div>
+      <div class="univer-list">
+        <div class="univer-title">Названия вузов</div>
+        <router-link
+          class="univer-list__item"
+          v-for="(item, index) in filterBlogs"
+          :key="index"
+          :to="{ name: 'university-detail', params: { id: item.id } }"
+        >
+          <div class="univer-list__title">
+            {{ item.name }}
+          </div>
+          <div class="univer-list__city">{{ item.city }}</div>
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import carousel from "vue-owl-carousel";
+import axios from "axios";
 export default {
-  name: "Home",
-  components: { carousel },
   data() {
     return {
+      univer_search: "",
       univers: [
         {
           id: "1", // уникал ракам бир хил буп комасин
@@ -1184,6 +1088,7 @@ export default {
           // Заочная русский 2021-2022
           direction_type2_lang2_year2: [],
         },
+        // 5 nest
         {
           id: "6", // уникал ракам бир хил буп комасин
           name: "ФЕРГАНСКИЙ МЕДИЦИНСКИЙ ИНСТИТУТ ОБЩЕСТВЕННОГО ЗДОРОВЬЯ", //универ номи
@@ -1336,8 +1241,989 @@ export default {
             },
           ],
         },
+        {
+          id: "7", // уникал ракам бир хил буп комасин
+          name: "АНДИЖАНСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ", //универ номи
+          city: "Андижанская область", // кайси шахарда жойлашганлиги
+          address:
+            "Андижанская область, город Андижан, улица Университетская, дом 129, почтовый индекс: 170100", // адресс
+          phone: "0 (374) 223 88 30", // телефон номери
+          image:
+            "data:image/jpeg;base64,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", // университет расми уни алохида битта файл киб тур
+          type: [
+            {
+              id: 1,
+              name: "ochniy",
+            },
+            {
+              id: 2,
+              name: "zauchniy",
+            },
+          ],
+          lang: [
+            {
+              id: 1,
+              name: "rus",
+            },
+            {
+              id: 2,
+              name: "uzbek",
+            },
+          ],
+          year: [
+            {
+              id: 1,
+              name: "2020-2021",
+            },
+            {
+              id: 2,
+              name: "2021-2022",
+            },
+          ],
+          // очный узбекский 2020-2021
+          direction_type1_lang1_year1: [
+            {
+              id: 1, // уникал ракам бир хил буп комасин
+              name: "Прикладная математика", // юналиш номи
+              kod: 5130200, // юналиш коди
+              grand_count: 10, // градлар сони
+              kontrakt_count: 15, // контракт сони
+              obshiy_count: 25, // гранд ва контрак сонлари йигиндиси
+              grand_ball: 126.7, // грантга утиш балл
+              kontrakt_ball: 113.6, // контрактга утиш балл
+            },
+            {
+              id: 2,
+              name: "Архивное дело",
+              kod: 5220300,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 123.5,
+              kontrakt_ball: 101.7,
+            },
+            {
+              id: 3,
+              name: "Начальное образование",
+              kod: 5111700,
+              grand_count: 25,
+              kontrakt_count: 50,
+              obshiy_count: 75,
+              grand_ball: 150.9,
+              kontrakt_ball: 123.4,
+            },
+            {
+              id: 4,
+              name: "Физика",
+              kod: 5140200,
+              grand_count: 10,
+              kontrakt_count: 65,
+              obshiy_count: 75,
+              grand_ball: 157.3,
+              kontrakt_ball: 113.8,
+            },
+          ],
+          // очный узбекский 2021-2022
+          direction_type1_lang1_year2: [
+            {
+              id: 1, // уникал ракам бир хил буп комасин
+              name: "Прикладная математика", // юналиш номи
+              kod: 5130200, // юналиш коди
+              grand_count: 10, // градлар сони
+              kontrakt_count: 15, // контракт сони
+              obshiy_count: 25, // гранд ва контрак сонлари йигиндиси
+              grand_ball: 141.8, // грантга утиш балл
+              kontrakt_ball: 114.5, // контрактга утиш балл
+            },
+            {
+              id: 2,
+              name: "Архивное дело",
+              kod: 5220300,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 133.4,
+              kontrakt_ball: 115.5,
+            },
+            {
+              id: 3,
+              name: "Физика",
+              kod: 5140200,
+              grand_count: 25,
+              kontrakt_count: 50,
+              obshiy_count: 75,
+              grand_ball: 125.0,
+              kontrakt_ball: 88.2,
+            },
+            {
+              id: 4,
+              name: "География",
+              kod: 5140600,
+              grand_count: 15,
+              kontrakt_count: 35,
+              obshiy_count: 50,
+              grand_ball: 111.3,
+              kontrakt_ball: 89.3,
+            },
+          ],
+          // очный русский 2020-2021
+          direction_type1_lang2_year1: [
+            {
+              id: 1,
+              name: "Физика",
+              kod: 5140200,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 82.0,
+              kontrakt_ball: 63.2,
+            },
+            {
+              id: 2,
+              name: "Химия",
+              kod: 5140500,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 75.4,
+              kontrakt_ball: 63.1,
+            },
+            {
+              id: 3,
+              name: "Математика",
+              kod: 5130100,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 104.0,
+              kontrakt_ball: 63.0,
+            },
+          ],
+          // очный русский 2021-2022
+          direction_type1_lang2_year2: [
+            {
+              id: 1,
+              name: "Биология (по отраслям)",
+              kod: 5140100,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 91.4,
+              kontrakt_ball: 75.6,
+            },
+            {
+              id: 2,
+              name: "Физика",
+              kod: 5140200,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 85.1,
+              kontrakt_ball: 64.1,
+            },
+            {
+              id: 3,
+              name: "Математика",
+              kod: 5130100,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 90.3,
+              kontrakt_ball: 67.2,
+            },
+          ],
+          // Заочная узбекский 2020-2021
+          direction_type2_lang1_year1: [
+            {
+              id: 1,
+              name: "Начальное образование",
+              kod: 5111700,
+              grand_count: 0,
+              kontrakt_count: 125,
+              obshiy_count: 125,
+              grand_ball: "-",
+              kontrakt_ball: 101.5,
+            },
+            {
+              id: 2,
+              name: "География",
+              kod: 5140600,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 81.7,
+            },
+          ],
+          // Заочная узбекский 2021-2022
+          direction_type2_lang1_year2: [
+            {
+              id: 1,
+              name: "Биология (по направлениям)",
+              kod: 5140100,
+              grand_count: 0,
+              kontrakt_count: 50,
+              obshiy_count: 50,
+              grand_ball: "-",
+              kontrakt_ball: 96.6,
+            },
+            {
+              id: 2,
+              name: "География",
+              kod: 5140600,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 88.2,
+            },
+          ],
+          // Заочная русский 2020-2021
+          direction_type2_lang2_year1: [
+            {
+              id: 1,
+              name: "Начальное образование",
+              kod: 5111700,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 79.0,
+            },
+            {
+              id: 3,
+              name: "Дошкольное образование",
+              kod: 5111800,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 75.3,
+            },
+          ],
+          // Заочная русский 2021-2022
+          direction_type2_lang2_year2: [],
+        },
+        {
+          id: "8", // уникал ракам бир хил буп комасин
+          name: "АНДИЖАНСКИЙ МАШИНОСТРОИТЕЛЬНЫЙ ИНСТИТУТ", //универ номи
+          city: "Андижанская область", // кайси шахарда жойлашганлиги
+          address:
+            "Андижанская область, город Андижан, проспект Бабура, дом 56, почтовый индекс: 170119", // адресс
+          phone: "0 (374) 223 43 67", // телефон номери
+          image:
+            "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHCBUVFRgVFRUYGRgaGBoYGBoYGRkaGhgaGBgaGhocHBocIS4lHB4rIRgcJjgmKy8xNTU1HCQ7QDs0Py40NTEBDAwMEA8QHhISHjQrJCs0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQxNP/AABEIALcBEwMBIgACEQEDEQH/xAAbAAACAwEBAQAAAAAAAAAAAAABAgADBAUGB//EAEQQAAEDAgMFBAgEBAQFBQEAAAEAAhEDIQQSMQUiQVFhE3GBkQYUMkJSocHRYpKx8CMzguEVFkNyNFSiwtIldIOz8ST/xAAYAQEBAQEBAAAAAAAAAAAAAAAAAQIDBP/EACERAQEBAAICAwEBAQEAAAAAAAABEQISIVExQWETA4Ei/9oADAMBAAIRAxEAPwD2EIQmUXveQiEJ0IQIQgQnhCFQkKQmhCECwhCdCECQhCchCECQhCeECFQkKJoQhAqkJkIQKQgUxQhAiiYoIFKCcpYQKgmhSECpU5CEIEUhPCWECkIQnhCECFBPCBCBIUTQohjvQpCaEIWNCqQiQpCapYQhNCEIhVCE0IIpYQhNCEIFQhMpCuoRQhNCBCapIQhWQhCaK4QhOUITUJCBCeFIV0VwhCchCECwpCaFEUkIQmhBNQsIQnhAopIQhPCCaEhAhOhCaEhCE8IQmhYUTQomjuwpCGHqse0PY4OabgjRcrG7YpOZWpsqEVG52Q0b4cIEgd7hfv5LleUi5XUaQdCD3ef1UXkdlbbZhmubXqPIBBJezezPMREkjK1v7K9ewhwDhoQCPFOPKVbxwsKQnLUMq0yWEIT5VMqCuEIVuVLkRVcIQrciGVBXCEKzKhCCuEITmOYQkcx5pphYQIRkcx5hAuHMeYTTAhAhMXN+IeYQzt+IeYTTCwlIT52/EPMIZhzHmFdMKQhCbMOY8wpI5jzTTCQhCstzQhNMVwpCeLwpkTRWQhCsLEMqaK4QhWZFMqCqEHkAEnQCT4K3KsW1Q4Na4TAfLrE7sEEEDhdS3JqybWWptqiCRnYY/EFFzf4fHDgcIgWAsNRyUXD+nL269OLk4LH1fVjTbVfkBNmmOOYjSY+6zV9sPIO87O4y5wIkkQZkX4A+CxDddF7ty2HE/omewTYxe9up5rheTfg1atUqPzPLnuNjeZuTrykn5r0LcfWADRVeIGge4QByAOi83hX5Yyl0k3g2y6mQt2CJqVmtk3zAXNrTOsjulWcsaljrev1j/q1Pzv8Auk9eq8aj/wA7ynpYJjy4B5lrspu/WAefVLU2cAWkPMEkG7oFiefT5q91/wDJXYqp8b/zvKybQxlUBoY55JNzJsB39f06rpjZ7Pj66u+6sOzWAAlxg6HeU7LvFzMPiKhAz5p4mSrC93En5ldD1GmPe4xx15fJM7Z9NphxE9Qnf8WWOaWn9gqZJ0HmFvfgKRBALZLSRDRwm4MdD5JqOEowM2ScoJljbTHTqE7fi9o5uXm35LDhXPlxcwQXEgWsIEfovT08DScSAGEgSdxv2QbQw/4NY9hmvLRTvfRecccMn3QO8A/ojl/DPcB913WYWiWl4DC0anIzh4JeyoRO5ET7DNJidOad76P6Rxez6Dy/uplnhHeB911SMPcwyBlk9mPeEt93kFY+nQAkhliB7DdTMcOhTvfS/wBI42WOE9wH1Kx4vPnZkbugkmYuYIAtwXpGCgYENu4tG4Llpg+7zKdlOiS1oDZcJbuC4Ezw/CfJO19H9I4DC46tA8j9VqYbXE9wA/Urp1KdFpIIEjXcHMDl1CpxOGpuY/K0WaCdwCzo6cina+ln+kZACeQ7wPoVHdG+MCP1WttOjIGUkk5fYJv3gW11TeqUiwvAsJ1bGnQjqpeVn0f0jHk6A9wA/UrHtEPLAGMuXtzHdBDQZMX1stDX08pBAz3NmEgT7N4vqEcNSpuAD2Q4kAQAZ+Vr81Jz2/Bf9JhmAmmZYBDxyIOYG4EiPZVTqcde4R9VvZg6ZYWtB3nN92Jyh/RYqGCohoBmQ1rjuzqBxi/tBa2+k4/6SarAPd4fYqOLuE/vxW2lsyk8uDRdtjugQb9OhRr7Kps1GpgQ0H6J2rX9Z6Yi9w4nwlZ8ViamZgZni5cZ4gWGuhv8l0hs2mSBeTIG5y14IP2dSBIOo13J16x1TtS/6cb9MrMS88XjvJ+hVOKxT87Zc/QwS50c4+QPh0W2phqTXBpHOTlaA2Ocj9ysuJp0y3dMOBIA0nkdLg8iufPnsxnlzlmSOZVeZPtDy+6iu7Ae8RPGx+yi5ObEXw4DLp0v5qx3CBMmIHX66qkEuk9f3wVBc694Hmu8YamMM5mk2bPKBF/n+yrMDixSeXlskNcBeIJt91kpVz7MuBiD3Roox4vn3mjQSRB4dOiD0novhKx/iE7j3A8L3u4zyXWrUSGMkbxe6BH4P/1cv0X2lEAvaykzdykxme8DS1zPPqultvbDNwsIflJJIJgbpEacpPgl5X4WSfIUHuc5zLy1htESQ8T32cPNY8TtLM9jGX3YJmDmiXCOEQqsJt8itneTlMy0GzQS0SI100WPbBpGtnBJpl+aRxzQXlvmeGvNO1pkeofhapmzozjLcezvSddNEcfhnmqMgMAajnC5+z/SFoe7PAbUe2A5xJbLTmi2gIaMttTHJehfXa1xadbGI4QBKdrqyTHJpYWrLC/NAY/NJm/8SJvf3VW3D1ZdkDoyNDSDF5Z1tYFd1zg4ECbiPZPEIYanlEXNgPZPAQne/JkzGLBYV4e9z5jKIk8QBJWPDYKvLZzAdoCZd7lut+Nl3y6xEG4jRQ1AImRJgTaTyCk53TrHKwuDeMO9rgc5zZRmk3a2LzzlZmYHEZI3v5bhGf3y8kceUXXc9aZzH5hyB58iD4hE4pnMfmb0PPqPMKy8vR1ji47ZzzSZlae0gZjImwg3lJi9nV8rspc6XtIGYjKAHg6mOI0XbdiGzJcIFjvNsSec6y0jwTOxLQSCQCNQXNEadfxDzCTlyn0XjK5W0dnONWm6k0huaXkED3gbjjaVRgNn1xUpF8lrQ4POedS+OMnULtOxbBq4fmbynnyEp6dYO9m8awQeJHPmCPBTtykzDrN1xMbs173VHsOsBrZjRzZMzbQqUsC9jKhfxZTAvNwGh31XcAPwn5c+9V16Zc0tgie77qd7mLOM3Xn8Hs2rmadAKuY73uyJ017lz8S97KOQuAIe5rm97W6k8LHTmvV4l7qbHPDScu8dNJvx5SvObdxDHjPTddwAIIjOBHPlMWjis8udvgnGRyTpE2yjWPaF56CJub3S4Z8VGEugB7ZJI049/szZVuYXFuWxIkiOg/RZnTDQ7TMdYmOo/us8eXnUseqwD8phzxuPaS45nNu9rY0niR4rnYwOa3MHEB7GNYQ6CSDTmL9Flp4k/wAZ2jixrrHU+sUROXpm16rBX2xLGMgSwy115tHLhZdePLlfJZMx7nYgD2veQYc8Zc3JucOnlchV7aqAN3CMzXCe4zE9NF4/Z22CSWPeQwNhrWAjfNgXEXJ49SOC341hbll4e2IDm+3umIcB36ys8ryizMdbZu0G5m9o64L3Og90NAPiq9pYtpk03awRBIjh+oXEcHZ4sJIbvaEEwZOsAEnwCRrAGgTcTN5OvIWAiVm87iY1vrOq5rHO502NrDetwG8Fkq0XkZpIjQxMgWF+c/VPT1ABdJJJI4g6ju4dU9YsMNOsExE8AfA93Nc+3lcZHOcP9MnrET8lFLjSoQOAzafNRb2DMMrR9OappuBJCqc8kWIEjUiFVBC74wvqPAVDHxPEHgVdQpscSHvymJBOk9eQ6omm0CCHOMZgRoB1Ame+eIT4MaNlYes9wNNpIDgSJAbYyMxJiFH4h2XLImTu8RA5jvIjorNh45jXNZVe9lIuOY0zDpLTkA65o8OBTbayEtfQfUe0g5y9oaG1CJIEcIP97pYZ6dv0gq4B1JgwrYe0NE7+ZwiXZ81pkeGi8/sOpTOJpDEyaObfAJktDSQLXAzZZjhKyuswTq6SO6YtzvmT4fCkM7TMyCS0Nzb4PMtjT7p+jv7UdRqYqn6mIkgva0lrRDpIbmIi0zHTqvTY6s4VS4DcyiTeAZsI14rxGxXsFUVXvyhp3QAcz3cBYQNV63aGMY0mm52++C0fEBEmRbgVi29vh0kljRT2m2YzsniN77LUzaItvt8n/ZeZZT3nHd/M3m3qloYgh9PM5l4nfZPtuFt6/DRa6sa9Z/iA0zsnuf8AZJWxVN4GdzDBkWfY9LdV56viCKuUFtrmXsB9k8CZWUVnZDvMkvN87Lbo03oScfuLb9PS1HUGgZsgHCWP5AWtyA8kvrWGEiWCLHcfbRvLoB4LneklI5GXaLAy5zQNOBJgrHidlVD6xlLBvAyalPdDnyMwLt2RzhJbfulyV6EYigeLCIn2H/7gdPxT4oVMfh3Hecwkg603yQLH3fwf9K4bMJVDsmZmYUWzvM1bSYSZmIsTMq2pst8secgAp1Cd9hsO0MiDfXhyUy+6a67cXQLXOGXLfMcjo0Mza9nHzTM2rSAzB4ANpyOvF40/FPiuVs+gTgnhpa6S+7TIuymAuY3Z1Q02ARIfUdqfhpxw71Pn5rV8Zj1zNpNJID5ImQGG0GDwWZ+36QBJq6EA7jtSCRw6Fc7Zk9viJe02fABMj+K0clw2YaaTt9ntsM7/AAbU/Cp1mpvjXrTtZj5pte4uLTYMMwRre2hXk8TVMFh1BiSBPAf9rfJdvZtACvmzNP8ACdYZp9hnTouJi6jYqvc9oLajmNYc2dwm7mwMsd5GminLj5yL9aow9QmZtAgg8Z0I+SxYrNa83PjxVrHuLWvBIEuBzRNoiY1vPkrcbRomm8mu4VQTFMU90w5oG/n3ZGY6clOPHOSX4drZW1sI3AvpGgDiCHmo8hskdoMmV5MgAlm6OLSY4rxeIdEwbmYtN+q62ysKW9s0gAmk4HeYYLalI+64k+MaLLgnUxWYatPtWDNLM/Z5rWl0yI1tyXWfLL023Np4GtQptw1DI9jWlzsga9xAGbM4XfcETPGVx8EbuDeZubjQaDwmOqd9VmUZKLaRbTa0lrpzk5TndcwTPz7llwRIOoAzTHEjie5c+fm2LFmKxGacs3PL5fqs7HugzxNhcDUcui14mlqATZxFiDBHA5dFlD7g726QbfhjVc5PpW2ix7WCq9lQNdORxYQ1+V18p0MdNFXVzgZyx7W3Ie5rmsdMS1rtCR3yrMdjqjmsYXucxgJa0ndaXSSAPEqnHbRrVKTKTqh7Jhc5jIADSSeMTq4681Zxl8ms/buFgWRwt/ZRUUsNIE1I6clFrweXRLHChTyCHQC4iAYy3k+SlNld1Omwl0B7swziOzLKYGh0s62uqow+EeYBeQ3/AHt0j4c0+EKynhn2/iu4e+I+RXbtIzizDYWq7K6mHZTQABDgBnyW1IEzxW/C4Wo6qW1M38lgMuB38lMZrG5zB9+h535+Fo1GgDtnMF90PcIudA1atGia7s8mXB9SSIECQ02mTHVY5cvpqSbrNszB4gBhbna01WF0PDZZ7071230RZQeMO1r5BL3lsuB3TTAaZBMCZV9UskkYhwEmAHvaByEZICy0CyWF9aWtLTlzuIgai7IuLJ21ZOMOzCYgtc3fvSgtLxdxqgixOuUG/wB1nODqOpua1pc8VAHjMDAymdTHL5LRVxDBE1XgwLtcZIIBF40vKwmuyTD6gMmXAmTvGCbi8QtdrU/8xtw2z3ggsH+u1wyvuKY5306LoYim/tmvZORpfn5SdJHHhwXKw9Njz/NqAzwDzb+lq6eD2ZeQ95ufaLgDyJBapbd1ZmLKdy7T8w4xwlc6pScH0g4tkFpgvYD/ADCdC6TrwXZpbMcHF2fXq0AaabvTipV2Lne173GWxEOZwJItHVb2MdbrFi6TjicwyxF99gPsHgTKpqYJ7WBrg1u9N3sHu9XdF3P8Kl+c6/7m8o71pq7MzgZ7xpdo/RqdpheNtYfSFhdRYBlmBq5oGg4kx81fiKZjGbzNKOr2W3263t4rZX2XnaGOG6BEBw0GnuLaMAyHywfxMuffcJyEEcLaLEskbvG264bmE1X7zL4Yj226+qjrp18VpHsUG5mGcPWHtC9qunMfYrpf4czMXltyzIRnMZcnZxpPspvVGQwZG7jHMbvus1+bNwv7Z1V7ROtcHAUnMwLwHNz/AMTKWuBAPZsi/BV1aT30WFhY5wLswBgRlpyQS06Lv0dnMYwsaN0z75OoAPD8ITMwLWsyNBAv7x4gDlyAWJcut3jsxwtm0wMRiDnaZFSwJJ/nM1suPgMMajHNY5hIqUyYL7DLU5t6r2dPZjGvc8N3nzm3nRvODjbvAVWF2NTpghjS2SCYc+TlBA4/iKs5TUvC5jBgacVQczZ7N1hmn+W3mF47awBqVGyBL6nHm4r6OzZzGuzgXjLcuNsoboTGgXnMf6GMe97w90ufmytj3pJu42j69E7TdOtnHHmsI0NoubmFizlaXVL6/iaFXtSm1zxJEFlNxk6ywToeZK9Az0XDG1G5KpzMAEwd5r2OHsE8GlZsdsunFMOa8DsmtdvAFrqbi1ou3Utv49E7cd1nPDPs19LLWyt3uzqPLi4T7TC7wsLLm4emHEy5rTDpkga2420Xe2Xsug0vgPvSqAy9hERJtk1ss2O2dQfUkB4zDNGZouA1vwmBxU78fnTFOHNN2cuy/wAumIJHuZGE6/hHmE4ZQMljmhwY6RI+Ag26SdEaeAa6m4Q6In2mE7z2Wuy3sj9xFtLAMe+o7I8Sx5MOYfagEDd1udSpeXHflqX8YqeIpTdwILszoO8eJEnmr8Ni2l7ntOVgYGg8BMjWIm7fNLhsDTY9rjTeQDMOyEHvsFfhMCwseyHgNY54ns7kPpkjTWG/JLePzqS4qxVSkWnKQTkDYB4ta0Tpqcrj4lSmKIYHF0s3mi9g4ju4WI70X4djKb8gfq1xJDDAZmBjL0e75Lp0disdQDXMqCHz7Dc3U5YiIy3Sdfpf+OFVFAmRUAsBEkaAD4eii7P+W6Xw1vy0lFfB59No9G8M72cR3bwJ+aLvRBnu4g+LWn6hd5mzf3mNvNqtbs8A+07z/stZ7TJ6eVreiFVxJGIYSebMv1Kof6JYgcabu6PqAvaNwjRxJ8f7K0UAD0UqdXz/APyriCQMjRBud2PG+i2Yb0MqQM72Dua5x+i9wG9EwUXrHlKPojTN3PJ1bZrQDl3evJW7L9HqMOJaDFSo0SAbNeQP0XoqIt/U75vJXL9HCS2tJJ//AKsQL8hVcAFpci4bLYLAR3WTDZzeZ81uhQptXIx+ot5nzKduCbzPmVoCk8k2niK/Vm9fM/dT1dvL5n7qwd6hPOEMJ6uz4QiKLPhHkExPVASooZG8h5BGAoWnkfJFtN3wnyKAKSg9hbqCLdUEwMShKU/vgpKYu0VErnKC+imJ2Og4A2InvCSYRn98kxdI/CMNsoHDdlvzbC49TZVD1gMuCab3xmJdZ7BN5tddsOXFrH/1Cn/7V/8A9rE6ypV3+AUgCAX5SRaW2uDrE8FezY9Js2dcQZcbiZi3cFt4d1/mB9UMynWLjINm0hpTYe+T+sqGgR7DKTfA/QBai+yDqg5jzTrEYMZgX1GFhe1rXNLXZWGbiDBLrceCR+z6rmBpxDpDnEuDACQ4NGWxEAZSZ6rodq34h5oZ2/EPNXIY4/8Agbv+Yf5v/wDNRdftBzHmip1hjxuA9Mqmd3au3NYDPZgmcsH9eS3/AOb6eaz3gHWWC3KbnqVl/wAmsBk4psTp2bvInNdVv9Em/wDOM4yezdN5/EOa6Zn05b+ukfStjXAZ3ObBMhkOm0AAwOeqFT0sp6NqPdxEMYNI5xz+S5x9FW8cYyL/AOm4HlrnKpZ6MUZ/4xk6Wpu/UuMmE/4b+u0/0vpCIe51iTuQQRprZc+l6ZvFWHncvOVgkDgb8Y4Ktvoqwn/iWERBHZvGmkXsnZ6LskAYmnP4mvFxynxUsXXYd6V0mFzCHyLjdEEkkxryjzWLYe3GMFRr3FgdVfUaYme0eXEEcIPnISP9EnP1xFOf9jz9VuZs/CYFnaPmvUOhcAGg6w1vhxzHuTKdnYwOKFUFzS8MiQ97Wta4c2k3I6wudj/SKkxwYxznunVrRlHkL+FlxcVisVjDxYydAYHS3H5rds7YzKd8pLuc/wB1rJPk7X6d9mJYRIe+OrIPkQlfiW/E75fZZQwcvmUvZjkou1orYpuXcc7NOpiAO5UjEu4v+QU7IckeyHIeSmG0PWD8R+S0UdsOY3KIO8XEnjIAiAOET4qnsxyHkEwpjkPJBa/b1XhlH9KpdtzEcHsH9A+6bJ0HkEcvRXUxir4yrUdL6ogWAa3L/wByem8j3nHqSfutUdEIPJNFXak8Slc/hmI8fur78kwlRdqhlUAb294kforBimHVh/M5OWJHNKeDatZi2Ag5AYIMEmDB0K306+GfqxzD03mjwN1y8qWSFMNruv2LmbmpOY/oSfnFwfAryO18JiqdVtQYaS0FmZo7QZXEGC0b2WWg8D1HHqMrObdpjusV1MHtx7RDxnHUCQlWV46n6RnK8mmxu7AlrhcOaTILtMsnwWWn6Su4Mo245D4Qc0cF6p2LcTJgnqGkqevP4Nb5AfomX2mvLf5lfDyGUt32oYBEcSS6LfRI30hqEe50cGNywBwmb/ZeuOLf7oaP6j9GpPWqvFw+aZ+m/jzTtrYmJaAf/jbbwhMzaOLdIh/hSjxkNXoHYqodXnwEfMyg3EO+L6/VMvs38ef9exp4VPGk7/wUXoO3Pxf9IUTL7N/GQYan8LfJWdiz4VWGBMGBdGTCmwaNCZrG8gkACaVlUyN+EKFjfhHkEQAnACCttMDgEwYOQ8kXFAFAwagXI+KCBg5MCEkJggZKjmRQEKAqICVFMe5LChKXMgcJZQa5ElAwKgKgcoUDEoIQiSghCCZAhACEESFECEJYVhCBCqEnohmPIolqBBQQk80C4oFvVAsQHOokgqIKxUTB45JcicAIhmgIylkKZggsaEcyQPU7RFEv6IZ+iUuPNEBA0qByGiMoGCdpSZlMyBi5DMhKIcgYFRJmRdW7lFWJCEnaTomz8xKBpRaVSagVjXhA0qZkhei0oLJRzIAhQkIDKBKikoiSohKMIIUIUQQAoQmSkKgJSESlhBIUUhRBma5MCVFEQQ6UYUUQGOCEQoogIT5lFEUHKBqiiBgEYUUQQm8KAqKICkfBCiiAtao5RRQQhFoUUQEhTMgogsZV6Ka3UUQGVMyiiAZkS5RRApelzFRRAM6OZRRUTMhmuoogl1FFEH//2Q==", // университет расми уни алохида битта файл киб тур
+          type: [
+            {
+              id: 1,
+              name: "ochniy",
+            },
+            {
+              id: 2,
+              name: "zauchniy",
+            },
+          ],
+          lang: [
+            {
+              id: 1,
+              name: "rus",
+            },
+            {
+              id: 2,
+              name: "uzbek",
+            },
+          ],
+          year: [
+            {
+              id: 1,
+              name: "2020-2021",
+            },
+            {
+              id: 2,
+              name: "2021-2022",
+            },
+          ],
+          // очный узбекский 2020-2021
+          direction_type1_lang1_year1: [
+            {
+              id: 1, // уникал ракам бир хил буп комасин
+              name: "Автомобильный сервис", // юналиш номи
+              kod: 5620600, // юналиш коди
+              grand_count: 15, // градлар сони
+              kontrakt_count: 60, // контракт сони
+              obshiy_count: 75, // гранд ва контрак сонлари йигиндиси
+              grand_ball: 88.4, // грантга утиш балл
+              kontrakt_ball: 72.7, // контрактга утиш балл
+            },
+            {
+              id: 2,
+              name: "Автомобильное и тракторное машиностроение",
+              kod: 5310500,
+              grand_count: 5,
+              kontrakt_count: 45,
+              obshiy_count: 50,
+              grand_ball: 119.8,
+              kontrakt_ball: 75.7,
+            },
+            {
+              id: 3,
+              name: "Экономика (по направлениям)",
+              kod: 5230100,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 176.3,
+              kontrakt_ball: 147.8,
+            },
+            {
+              id: 4,
+              name: "Мехатроника и робототехника",
+              kod: 5312600,
+              grand_count: 10,
+              kontrakt_count: 15,
+              obshiy_count: 25,
+              grand_ball: 94.1,
+              kontrakt_ball: 78.8,
+            },
+          ],
+          // очный узбекский 2021-2022
+          direction_type1_lang1_year2: [
+            {
+              id: 1, // уникал ракам бир хил буп комасин
+              name: "Автомобильный сервис", // юналиш номи
+              kod: 5620600, // юналиш коди
+              grand_count: 15, // градлар сони
+              kontrakt_count: 60, // контракт сони
+              obshiy_count: 75, // гранд ва контрак сонлари йигиндиси
+              grand_ball: 88.4, // грантга утиш балл
+              kontrakt_ball: 72.7, // контрактга утиш балл
+            },
+            {
+              id: 2,
+              name: "Автомобильное и тракторное машиностроение",
+              kod: 5310500,
+              grand_count: 5,
+              kontrakt_count: 45,
+              obshiy_count: 50,
+              grand_ball: 119.8,
+              kontrakt_ball: 75.7,
+            },
+            {
+              id: 3,
+              name: "Экономика (по направлениям)",
+              kod: 5230100,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 176.3,
+              kontrakt_ball: 147.8,
+            },
+            {
+              id: 4,
+              name: "Мехатроника и робототехника",
+              kod: 5312600,
+              grand_count: 10,
+              kontrakt_count: 15,
+              obshiy_count: 25,
+              grand_ball: 94.1,
+              kontrakt_ball: 78.8,
+            },
+          ],
+          // Заочная узбекский 2020-2021
+          direction_type2_lang1_year1: [
+            {
+              id: 1,
+              name: "Автомобильное и тракторное машиностроение",
+              kod: 5620600,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 76.0,
+            },
+            {
+              id: 2,
+              name: "Электроэнергия (по сетям и маршрутам)",
+              kod: 5310200,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 75.8,
+            },
+          ],
+          // Заочная узбекский 2021-2022
+          direction_type2_lang1_year2: [
+            {
+              id: 1,
+              name: "Автомобильное и тракторное машиностроение",
+              kod: 5620600,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 77.7,
+            },
+            {
+              id: 2,
+              name: "Транспортная логистика (по видам транспорта)",
+              kod: 5620100,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 78.8,
+            },
+          ],
+          // Заочная русский 2020-2021
+          direction_type2_lang2_year1: [
+            {
+              id: 1,
+              name: "Экономика (по направлениям)",
+              kod: 5230100,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 106.5,
+            },
+            {
+              id: 2,
+              name: "Машиностроение (по направлениям)",
+              kod: 5310600,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 66.3,
+            },
+          ],
+          // Заочная русский 2021-2022
+          direction_type2_lang2_year2: [
+            {
+              id: 1,
+              name: "Экономика (по направлениям)",
+              kod: 5230100,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 97.7,
+            },
+            {
+              id: 2,
+              name: "Машиностроение (по направлениям)",
+              kod: 5310600,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 70.4,
+            },
+          ],
+        },
+        {
+          id: "9", // уникал ракам бир хил буп комасин
+          name: "НАМАНГАНСКИЙ ИНЖЕНЕРНО-ТЕХНОЛОГИЧЕСКИЙ ИНСТИТУТ", //универ номи
+          city: "Наманганская область", // кайси шахарда жойлашганлиги
+          address:
+            "Наманганская область, город Наманган, улица Касансая, дом 7, почтовый индекс: 160115", // адресс
+          phone: "0 (369) 225 10 07", // телефон номери
+          image:
+            "data:image/jpeg;base64,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", // университет расми уни алохида битта файл киб тур
+          type: [
+            {
+              id: 1,
+              name: "ochniy",
+            },
+            {
+              id: 2,
+              name: "zauchniy",
+            },
+          ],
+          lang: [
+            {
+              id: 1,
+              name: "rus",
+            },
+            {
+              id: 2,
+              name: "uzbek",
+            },
+          ],
+          year: [
+            {
+              id: 1,
+              name: "2020-2021",
+            },
+            {
+              id: 2,
+              name: "2021-2022",
+            },
+          ],
+          // очный узбекский 2020-2021
+          direction_type1_lang1_year1: [
+            {
+              id: 1, // уникал ракам бир хил буп комасин
+              name: "Бухгалтерский учет и аудит (по отраслям)", // юналиш номи
+              kod: 5230900, // юналиш коди
+              grand_count: 5, // градлар сони
+              kontrakt_count: 95, // контракт сони
+              obshiy_count: 100, // гранд ва контрак сонлари йигиндиси
+              grand_ball: 154.1, // грантга утиш балл
+              kontrakt_ball: 112.9, // контрактга утиш балл
+            },
+            {
+              id: 2,
+              name: "Энергетика (по направлениям)",
+              kod: 5310100,
+              grand_count: 30,
+              kontrakt_count: 70,
+              obshiy_count: 100,
+              grand_ball: 98.6,
+              kontrakt_ball: 75.5,
+            },
+            {
+              id: 3,
+              name: "Экономика (по отраслям)",
+              kod: 5230100,
+              grand_count: 3,
+              kontrakt_count: 72,
+              obshiy_count: 75,
+              grand_ball: 164.0,
+              kontrakt_ball: 125.0,
+            },
+          ],
+          // очный узбекский 2021-2022
+          direction_type1_lang1_year2: [
+            {
+              id: 1, // уникал ракам бир хил буп комасин
+              name: "Маркетинг (по отраслям)", // юналиш номи
+              kod: 5230400, // юналиш коди
+              grand_count: 5, // градлар сони
+              kontrakt_count: 45, // контракт сони
+              obshiy_count: 50, // гранд ва контрак сонлари йигиндиси
+              grand_ball: 151.2, // грантга утиш балл
+              kontrakt_ball: 92.4, // контрактга утиш балл
+            },
+            {
+              id: 2,
+              name: "Менеджмент (по отраслям)",
+              kod: 5230200,
+              grand_count: 5,
+              kontrakt_count: 95,
+              obshiy_count: 100,
+              grand_ball: 149.1,
+              kontrakt_ball: 79.8,
+            },
+            {
+              id: 3,
+              name: "Технологии и оборудование легкой промышленности (по видам производства)",
+              kod: 5321500,
+              grand_count: 15,
+              kontrakt_count: 35,
+              obshiy_count: 50,
+              grand_ball: 84.0,
+              kontrakt_ball: 69.3,
+            },
+          ],
+          // очный русский 2020-2021
+          direction_type1_lang2_year1: [
+            {
+              id: 1,
+              name: "Экономика (по отраслям)",
+              kod: 5230100,
+              grand_count: 2,
+              kontrakt_count: 23,
+              obshiy_count: 25,
+              grand_ball: 163.4,
+              kontrakt_ball: 125.5,
+            },
+            {
+              id: 2,
+              name: "Технологические машины и оборудование (по отраслям)",
+              kod: 5320300,
+              grand_count: 6,
+              kontrakt_count: 19,
+              obshiy_count: 25,
+              grand_ball: 75.5,
+              kontrakt_ball: 63.2,
+            },
+          ],
+          // очный русский 2021-2022
+          direction_type1_lang2_year2: [
+            {
+              id: 1,
+              name: "Экономика (по отраслям)",
+              kod: 5230100,
+              grand_count: 1,
+              kontrakt_count: 24,
+              obshiy_count: 25,
+              grand_ball: 162.8,
+              kontrakt_ball: 114.5,
+            },
+            {
+              id: 2,
+              name: "Технологические машины и оборудование (по отраслям)",
+              kod: 5320300,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 75.6,
+              kontrakt_ball: 63.0,
+            },
+          ],
+          // Заочная узбекский 2020-2021
+          direction_type2_lang1_year1: [
+            {
+              id: 1,
+              name: "Бухгалтерский учет и аудит (по отраслям)",
+              kod: 5230900,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 104.3,
+            },
+            {
+              id: 2,
+              name: "Маркетинг (по отраслям)",
+              kod: 5230400,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 103.4,
+            },
+          ],
+          // Заочная узбекский 2021-2022
+          direction_type2_lang1_year2: [
+            {
+              id: 1,
+              name: "Бухгалтерский учет и аудит (по отраслям)",
+              kod: 5230900,
+              grand_count: 0,
+              kontrakt_count: 50,
+              obshiy_count: 50,
+              grand_ball: "-",
+              kontrakt_ball: 91.4,
+            },
+            {
+              id: 2,
+              name: "Экономика (по отраслям)",
+              kod: 5230100,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 97.7,
+            },
+          ],
+        },
+        {
+          id: "10", // уникал ракам бир хил буп комасин
+          name: "НАМАНГАНСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ", //универ номи
+          city: "Наманганская область", // кайси шахарда жойлашганлиги
+          address:
+            "Наманганская область, город Наманган, улица Уйчинская, дом 316, почтовый индекс: 160119", // адресс
+          phone: "0 (369) 227 07 61", // телефон номери
+          image:
+            "data:image/jpeg;base64,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", // университет расми уни алохида битта файл киб тур
+          type: [
+            {
+              id: 1,
+              name: "ochniy",
+            },
+            {
+              id: 2,
+              name: "zauchniy",
+            },
+          ],
+          lang: [
+            {
+              id: 1,
+              name: "rus",
+            },
+            {
+              id: 2,
+              name: "uzbek",
+            },
+          ],
+          year: [
+            {
+              id: 1,
+              name: "2020-2021",
+            },
+            {
+              id: 2,
+              name: "2021-2022",
+            },
+          ],
+          // очный узбекский 2020-2021
+          direction_type1_lang1_year1: [
+            {
+              id: 1, // уникал ракам бир хил буп комасин
+              name: "Прикладная математика", // юналиш номи
+              kod: 5130200, // юналиш коди
+              grand_count: 20, // градлар сони
+              kontrakt_count: 30, // контракт сони
+              obshiy_count: 50, // гранд ва контрак сонлари йигиндиси
+              grand_ball: 151.3, // грантга утиш балл
+              kontrakt_ball: 132.8, // контрактга утиш балл
+            },
+            {
+              id: 2,
+              name: "Археология",
+              kod: 5120400,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 145.2,
+              kontrakt_ball: 139.3,
+            },
+            {
+              id: 3,
+              name: "Начальное образование",
+              kod: 5111700,
+              grand_count: 25,
+              kontrakt_count: 50,
+              obshiy_count: 75,
+              grand_ball: 154.9,
+              kontrakt_ball: 132.1,
+            },
+          ],
+          // очный узбекский 2021-2022
+          direction_type1_lang1_year2: [
+            {
+              id: 1, // уникал ракам бир хил буп комасин
+              name: "Архивное дело", // юналиш номи
+              kod: 5220300, // юналиш коди
+              grand_count: 5, // градлар сони
+              kontrakt_count: 20, // контракт сони
+              obshiy_count: 25, // гранд ва контрак сонлари йигиндиси
+              grand_ball: 137.6, // грантга утиш балл
+              kontrakt_ball: 114.5, // контрактга утиш балл
+            },
+            {
+              id: 2,
+              name: "Лечебное дело",
+              kod: 5510100,
+              grand_count: 0,
+              kontrakt_count: 20,
+              obshiy_count: 20,
+              grand_ball: "-",
+              kontrakt_ball: 137.6,
+            },
+            {
+              id: 3,
+              name: "Физика",
+              kod: 5140200,
+              grand_count: 25,
+              kontrakt_count: 75,
+              obshiy_count: 100,
+              grand_ball: 130.6,
+              kontrakt_ball: 84.0,
+            },
+          ],
+          // очный русский 2020-2021
+          direction_type1_lang2_year1: [
+            {
+              id: 1,
+              name: "Физика",
+              kod: 5140200,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 69.3,
+              kontrakt_ball: 57.1,
+            },
+            {
+              id: 2,
+              name: "Химия (на направлениям)",
+              kod: 5140500,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 72.4,
+              kontrakt_ball: 60.1,
+            },
+          ],
+          // очный русский 2021-2022
+          direction_type1_lang2_year2: [
+            {
+              id: 1,
+              name: "Физика",
+              kod: 5140200,
+              grand_count: 10,
+              kontrakt_count: 15,
+              obshiy_count: 25,
+              grand_ball: 89.3,
+              kontrakt_ball: 65.1,
+            },
+            {
+              id: 2,
+              name: "Математика",
+              kod: 5130100,
+              grand_count: 5,
+              kontrakt_count: 20,
+              obshiy_count: 25,
+              grand_ball: 109.2,
+              kontrakt_ball: 63.0,
+            },
+          ],
+          // Заочная узбекский 2020-2021
+          direction_type2_lang1_year1: [
+            {
+              id: 1,
+              name: "География",
+              kod: 5140600,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 78.9,
+            },
+            {
+              id: 2,
+              name: "Математика",
+              kod: 5130100,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 101.2,
+            },
+          ],
+          // Заочная узбекский 2021-2022
+          direction_type2_lang1_year2: [
+            {
+              id: 1,
+              name: "Музыкальное обучение",
+              kod: 5111100,
+              grand_count: 0,
+              kontrakt_count: 50,
+              obshiy_count: 50,
+              grand_ball: "-",
+              kontrakt_ball: 77.9,
+            },
+            {
+              id: 2,
+              name: "Педагогика и психология",
+              kod: 5110900,
+              grand_count: 0,
+              kontrakt_count: 50,
+              obshiy_count: 50,
+              grand_ball: "-",
+              kontrakt_ball: 96.6,
+            },
+          ],
+          // Заочная русский 2020-2021
+          direction_type2_lang2_year1: [
+            {
+              id: 1,
+              name: "Начальное образование",
+              kod: 5111700,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 75.8,
+            },
+            {
+              id: 2,
+              name: "Дошкольное образование",
+              kod: 5111800,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 75.8,
+            },
+          ],
+          // Заочная русский 2021-2022
+          direction_type2_lang2_year2: [
+            {
+              id: 1,
+              name: "Начальное образование",
+              kod: 5111700,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 78.8,
+            },
+            {
+              id: 2,
+              name: "Дошкольное образование",
+              kod: 5111800,
+              grand_count: 0,
+              kontrakt_count: 25,
+              obshiy_count: 25,
+              grand_ball: "-",
+              kontrakt_ball: 72.5,
+            },
+          ],
+        },
       ],
     };
   },
+  // mounted() {
+  //   axios.get(`http://localhost:3000/univer_list`).then((res) => {
+  //     this.univers = res.data;
+  //   });
+  // },
+  computed: {
+    filterBlogs() {
+      return this.univers.filter((item) => {
+        return item.name.toUpperCase().match(this.univer_search.toUpperCase());
+      });
+    },
+  },
 };
 </script>
+
+<style lang="scss" scoped>
+.univer {
+  &-search {
+    input {
+      width: 100%;
+      height: 40px;
+      outline: none;
+      font-size: 16px;
+      line-height: 20px;
+      margin-bottom: 40px;
+      padding: 0 12px;
+      border: 1px solid #333;
+      border-radius: 6px;
+    }
+  }
+  &-title {
+    font-size: 24px;
+    line-height: 28px;
+    margin-bottom: 32px;
+    text-align: center;
+    font-weight: 500;
+  }
+  &-list {
+    &__item {
+      box-shadow: 0 3px 16px 0 rgba(114, 114, 114, 0.2);
+      border-radius: 8px;
+      margin: 0 0 20px;
+      display: inline-block;
+      width: 100%;
+      padding: 20px;
+      transition: all 0.3s;
+
+      &:hover {
+        transform: scale(1.015);
+      }
+    }
+    &__title {
+      font-size: 20px;
+      line-height: 24px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+  }
+}
+</style>

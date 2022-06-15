@@ -45,16 +45,27 @@
               <router-link :to="{ name: 'test' }">Все предметы</router-link>
             </div>
             <div class="tests-wrap">
-              <router-link to="/" class="tests-item">Математика</router-link>
-              <router-link to="/" class="tests-item">История</router-link>
-              <router-link to="/" class="tests-item"
+              <router-link
+                :to="{ name: 'test-detail', params: { id: 1 } }"
+                class="tests-item"
                 >Английский язык</router-link
               >
+              <router-link
+                :to="{ name: 'test-detail', params: { id: 2 } }"
+                class="tests-item"
+                >История</router-link
+              >
+              <router-link to="/" class="tests-item">Математика</router-link>
+
+              <router-link
+                :to="{ name: 'test-detail', params: { id: 3 } }"
+                class="tests-item"
+                >География</router-link
+              >
+              <router-link to="/" class="tests-item">Биология</router-link>
               <router-link to="/" class="tests-item"
                 >Русский язык и литература</router-link
               >
-              <router-link to="/" class="tests-item">Биология</router-link>
-              <router-link to="/" class="tests-item">География</router-link>
             </div>
           </section>
           <!-- новости -->

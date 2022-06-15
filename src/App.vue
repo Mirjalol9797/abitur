@@ -30,7 +30,7 @@
           <div class="footer-nav">
             <router-link to="">Тесты</router-link>
             <router-link :to="{ name: 'university' }">ВУЗы</router-link>
-            <router-link :to="{ name: 'quota2022' }">Кабул 2022</router-link>
+            <router-link :to="{ name: 'quota2022' }">Прием 2022</router-link>
             <router-link to="/">Новости</router-link>
           </div>
         </div>
